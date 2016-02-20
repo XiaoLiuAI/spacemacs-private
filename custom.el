@@ -13,7 +13,7 @@
  '(beacon-blink-delay 0.3)
  '(cfs--current-profile-name "profile1" t)
  '(ctags-update-delay-seconds 1024)
- '(erc-nick "zilongshanren")
+ '(erc-nick "xiaoliu")
  '(erc-port 6666)
  '(evil-want-C-i-jump t)
  '(exec-path-from-shell-arguments (quote ("-l")))
@@ -49,12 +49,12 @@
  '(paradox-github-token t)
  '(pyim-dicts
    (quote
-    ((:name "BigDict-01" :file "/Users/guanghui/.emacs.d/pyim/dicts/pyim-bigdict.pyim" :coding utf-8-unix)
-     (:name "BigDict-01" :file "/Users/guanghui/.emacs.d/.cache/pyim-bigdict.pyim" :coding utf-8-unix))))
+    ((:name "BigDict-01" :file "/Users/xiaoliu/.emacs.d/pyim/dicts/pyim-bigdict.pyim" :coding utf-8-unix)
+     (:name "BigDict-01" :file "/Users/xiaoliu/.emacs.d/.cache/pyim-bigdict.pyim" :coding utf-8-unix))))
  '(ring-bell-function (quote ignore) t)
- '(safe-local-variable-values
-   (quote
-    ((eval setenv "PYTHONPATH" "/Users/guanghui/cocos2d-x/tools/cocos2d-console/plugins:/Users/guanghui/cocos2d-x/tools/cocos2d-console/bin"))))
+ ;; '(safe-local-variable-values
+ ;;   (quote
+ ;;    ((eval setenv "PYTHONPATH" "/Users/xiaoliu/cocos2d-x/tools/cocos2d-console/plugins:/Users/guanghui/cocos2d-x/tools/cocos2d-console/bin"))))
  '(sp-show-pair-from-inside t)
  '(tags-add-tables nil)
  '(tags-revert-without-query t)

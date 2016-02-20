@@ -81,11 +81,10 @@ values."
             shell-default-position 'full
             shell-default-shell 'ansi-term
             shell-default-term-shell "/bin/zsh")
-     (chinese :variables chinese-default-input-method 'wubi
-              chinese-enable-fcitx t
-              chinese-enable-youdao-dict t)
-     zilongshanren
-     guanghui)
+     ;; (chinese :variables chinese-default-input-method 'wubi
+     ;;          chinese-enable-fcitx t
+     ;;          chinese-enable-youdao-dict t)
+     xiaoliu)
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
