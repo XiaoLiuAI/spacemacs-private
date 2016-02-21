@@ -37,7 +37,7 @@ values."
      ;;        shell-default-position 'bottom)
 
      ;; languages
-     org
+     (org :variables org-export-in-background t); async export
      markdown
      emacs-lisp
      ess
@@ -55,7 +55,8 @@ values."
      dash
      chrome
      xiaoliu
-     deft
+     (deft :variables deft-directory "~/Emacs/org/"
+                      deft-recursive t)
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -266,26 +267,11 @@ in `dotspacemacs/user-config'."
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
   (golden-ratio-mode t)
-  (setq powerline-default-separator 'arrow-fade)
+  (setq powerline-default-separator 'arrow)
   (setq paradox-github-token "4830323ddf6e280c8aad0ee2dac60ae6457c8787")
-  ;; (defun my-evil-jumper-mode-config()
-  ;;   (local-set-key (kbd "<C-i>") 'evil-jumper/forward)
-  ;;   )
-  ;; (add-hook 'evil-jumper-mode-hook 'my-evil-jumper-mode-config)
   (global-set-key (kbd "<C-i>") 'evil-jumper/forward)
   (setq edit-server-url-major-mode-alist
         '(("github\\.com" . org-mode)))
-  (defun better-comment-dwim-line (&optional arg)
-    "Replacement for the comment-dwim command.
-    If no region is selected and current line is not blank and we are not at the end of the line,
-    then comment current line.
-    Replaces default behaviour of comment-dwim, when it inserts comment at the end of the line."
-    (interactive "*P")
-    (comment-normalize-vars)
-    (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
-        (comment-or-uncomment-region (line-beginning-position) (line-end-position))
-      (comment-dwim arg)))
-  (global-set-key "\M-;" 'better-comment-dwim-line)
   (dolist (command '(yank yank-pop))
     (eval
      `(defadvice ,command (after indent-region activate)
@@ -306,10 +292,8 @@ layers configuration. You are free to put any user code."
   ; (global-set-key (kbd "<f8> p") 'org-publish)
   (remove-hook 'python-mode-hook 'spacemacs//init-eldoc-python-mode); 移除会造成问题的minor-mode
   ;; (spacemacs//set-monospaced-font   "Source Code Pro" "Hiragino Sans GB" 14 16) ; 中文等宽,org表格对齐, 实际上就是把字的大小给固定了,恰好造成某种效果,把字体弄大了,不符合我的习惯
-  (setq org-export-in-background); async export
-  (setq deft-directory "~/Emacs/org/")
-  (setq deft-recursive t)
   (spacemacs/set-leader-keys-for-major-mode 'deft-mode "q" 'quit-window)
+  (setq fill-column-indicator t)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
