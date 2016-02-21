@@ -24,7 +24,6 @@
         ;; prodigy ;; manage services
         ;; languages
         ;; lua-mode
-        ;; 4clojure
         ;; (gulpjs :location (recipe :fetcher github :repo "zilongshanren/emacs-gulpjs"))
         ;; nodejs-repl
         ;; Github
@@ -37,50 +36,59 @@
         ;; lispy
         ;; litable
 
+        pangu-spacing
+
         ;; text notes
         ox-reveal ;; export org to HTML presentation
         org-mac-link ;; insert a link of/from an open mac application
         org-octopress
         org-jekyll
         org-tree-slide
-        deft
 
         (cc-mode :location built-in)
         (org :location built-in)
         projectile
-        popwin
         persp-mode
         org-pomodoro
         org-bullets
         multiple-cursors
         js2-mode
-        evil
         company-c-headers
-        ace-window
-        avy
         ))
 
-(defun xiaoliu/post-init-command-log ()
-  (with-eval-after-load 'command-log-mode
-    (setq clm/log-command-exceptions* (append clm/log-command-exceptions*
-                                              '(evil-next-visual-line
-                                                evil-previous-visual-line)))))
-;; (defun xiaoliu/post-init-pangu-spacing ()
-;;   (progn
-;;     ;; add toggle options
-;;     (spacemacs|add-toggle toggle-pangu-spaceing
-;;       :status pangu-spacing-mode
-;;       :on (global-pangu-spacing-mode)
-;;       :off (global-pangu-spacing-mode -1)
-;;       :documentation "Toggle pangu spacing mode"
-;;       :evil-leader "ots")
-;;     (add-hook 'markdown-mode-hook
-;;               '(lambda ()
-;;                  (set (make-local-variable 'pangu-spacing-real-insert-separtor) t)))))
+(defun xiaoliu/init-command-log ()
+  (use-package command-log
+    :config
+    (with-eval-after-load 'command-log-mode
+      (setq clm/log-command-exceptions* (append clm/log-command-exceptions*
+                                                '(evil-next-visual-line
+                                                  evil-previous-visual-line))))))
+(defun xiaoliu/init-pangu-spacing ()
+  (use-package pangu-spacing
+    :config
+    (progn
+      ;; add toggle options
+      (spacemacs|add-toggle toggle-pangu-spaceing
+        :status pangu-spacing-mode
+        :on (global-pangu-spacing-mode)
+        :off (global-pangu-spacing-mode -1)
+        :documentation "Toggle pangu spacing mode"
+        :evil-leader "ots")
+      (add-hook 'markdown-mode-hook
+                '(lambda ()
+                   (set (make-local-variable 'pangu-spacing-real-insert-separtor) t))))))
 
 ;; (defun xiaoliu/init-litable ()
 ;;   (use-package litable
 ;;     :init))
+
+(defun xiaoliu/init-chinese-word-at-point ()
+    (use-package chinese-word-at-point
+      :init))
+
+(defun xiaoliu/init-chinese-fonts-setup ()
+  (use-package chinese-fonts-setup
+    :init))
 
 (defun xiaoliu/init-osx-dictionary ()
   (use-package osx-dictionary
@@ -98,30 +106,13 @@
 ;;       (spacemacs/set-leader-keys "ags" 'gulpjs-start-task)
 ;;       (spacemacs/set-leader-keys "agr" 'gulpjs-restart-task))))
 
-;; (defun xiaoliu/init-4clojure ()
-;;   (use-package 4clojure
-;;     :init
-;;     (progn
-;;       (spacemacs/declare-prefix "o4" "4clojure")
-;;       (spacemacs/set-leader-keys "o4q" '4clojure-open-question)
-;;       (spacemacs/set-leader-keys "o4n" '4clojure-next-question)
-;;       (spacemacs/set-leader-keys "o4p" '4clojure-previous-question)
-;;       (spacemacs/set-leader-keys "o4c" '4clojure-check-answers)
-;;       )))
-
-(defun xiaoliu/post-init-popwin ()
-  (progn
-    (push "*zilongshanren/run-current-file output*" popwin:special-display-config)
-    (delete "*Async Shell Command*" 'popwin:special-display-config)
-    ))
-
-;; git clone https://github.com/hakimel/reveal.js.git to the location
+;; git clone https://github.com/hakimel/reveal.js.git to the right location that can be loaded
 (defun xiaoliu/init-ox-reveal ()
   (use-package ox-reveal
     :defer t
     :init
     (progn
-      (setq org-reveal-root "file:///Users/xiaoliu/.spacemacs.d/reveal-js"))))
+      (setq org-reveal-root "reveal.js"))))
 
 (defun xiaoliu/init-org-mac-link ()
   (use-package org-mac-link
@@ -129,13 +120,6 @@
     (add-hook 'org-mode-hook
               (lambda ()
                 (define-key org-mode-map (kbd "C-c g") 'org-mac-grab-link)))))
-
-(defun xiaoliu/post-init-avy ()
-  (progn
-    (global-set-key (kbd "C-s-'") 'avy-goto-char-2)))
-
-(defun xiaoliu/post-init-ace-window ()
-  (global-set-key (kbd "C-x C-o") #'ace-window))
 
 (defun xiaoliu/init-discover-my-major ()
   (use-package discover-my-major
@@ -231,15 +215,6 @@
 
 ;;       (ad-activate 'elfeed-show-yank))))
 
-(defun xiaoliu/post-init-evil ()
-  (progn
-    (define-key evil-normal-state-map (kbd ",/") 'evilnc-comment-or-uncomment-lines)
-
-    (define-key evil-visual-state-map (kbd ",/") 'evilnc-comment-or-uncomment-lines)
-
-    ;; (spacemacs/set-leader-keys "fR" 'zilongshanren/rename-file-and-buffer)
-    ))
-
 (defun xiaoliu/init-helm-github-stars ()
   (use-package helm-github-stars
     :defer t
@@ -256,14 +231,15 @@
 ;;       (define-key lispy-mode-map (kbd "s-1") 'lispy-describe-inline)
 ;;       (define-key lispy-mode-map (kbd "s-2") 'lispy-arglist-inline))))
 
-(defun xiaoliu/post-init-company-c-headers ()
-  (progn
-    (setq company-c-headers-path-system
-          (quote
-           ("/usr/include/" "/usr/local/include/" "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1")))
-    (setq company-c-headers-path-user
-          (quote
-           ("/Users/xiaoliu/cocos2d-x/cocos/platform" "/Users/guanghui/cocos2d-x/cocos" "." "/Users/guanghui/cocos2d-x/cocos/audio/include/")))))
+;; (defun xiaoliu/post-init-company-c-headers ()
+;;   (progn
+;;     (setq company-c-headers-path-system
+;;           (quote
+;;            ("/usr/include/" "/usr/local/include/" "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1")))
+;;     ;; (setq company-c-headers-path-user
+;;     ;;       (quote
+;;     ;;        ("/Users/xiaoliu/cocos2d-x/cocos/platform" "/Users/guanghui/cocos2d-x/cocos" "." "/Users/guanghui/cocos2d-x/cocos/audio/include/")))
+;;     ))
 
 ;; (defun xiaoliu/post-init-nodejs-repl ()
 ;;   (progn
@@ -274,41 +250,45 @@
 ;;       "sf" 'nodejs-repl-eval-function
 ;;       "sd" 'nodejs-repl-eval-dwim)))
 
-(defun xiaoliu/post-init-visual-regexp-steroids ()
-  (progn
-    (define-key global-map (kbd "C-c r") 'vr/replace)
-    (define-key global-map (kbd "C-c q") 'vr/query-replace)))
-
-(defun xiaoliu/init-multiple-cursors ()
-  (use-package multiple-cursors
-    :init
+(defun xiaoliu/init-visual-regexp-steroids ()
+  (use-package visual-regexp-steroids
+    :config
     (progn
-      (bind-key* "C-s-l" 'mc/edit-lines)
-      (bind-key* "C-s-f" 'mc/mark-all-dwim)
-      (bind-key* "C-s-." 'mc/mark-next-like-this)
-      (bind-key* "C-s-," 'mc/mark-previous-like-this)
-      (bind-key* "s->" 'mc/unmark-next-like-this)
-      (bind-key* "s-<" 'mc/unmark-previous-like-this)
-      (bind-key* "C-c C-s-." 'mc/mark-all-like-this)
+      (define-key global-map (kbd "C-c r") 'vr/replace)
+      (define-key global-map (kbd "C-c q") 'vr/query-replace))
+    )
+  )
 
-      ;; http://endlessparentheses.com/multiple-cursors-keybinds.html?source=rss
-      (define-prefix-command 'endless/mc-map)
-      ;; C-x m is usually `compose-mail'. Bind it to something
-      ;; else if you use this command.
-      (define-key ctl-x-map "m" 'endless/mc-map)
-;;; Really really nice!
-      (define-key endless/mc-map "i" #'mc/insert-numbers)
-      (define-key endless/mc-map "h" #'mc-hide-unmatched-lines-mode)
-      (define-key endless/mc-map "a" #'mc/mark-all-like-this)
+;; (defun xiaoliu/init-multiple-cursors ()
+;;   (use-package multiple-cursors
+;;     :init
+;;     (progn
+;;       (bind-key* "C-s-l" 'mc/edit-lines)
+;;       (bind-key* "C-s-f" 'mc/mark-all-dwim)
+;;       (bind-key* "C-s-." 'mc/mark-next-like-this)
+;;       (bind-key* "C-s-," 'mc/mark-previous-like-this)
+;;       (bind-key* "s->" 'mc/unmark-next-like-this)
+;;       (bind-key* "s-<" 'mc/unmark-previous-like-this)
+;;       (bind-key* "C-c C-s-." 'mc/mark-all-like-this)
 
-;;; Occasionally useful
-      (define-key endless/mc-map "d" #'mc/mark-all-symbols-like-this-in-defun)
-      (define-key endless/mc-map "r" #'mc/reverse-regions)
-      (define-key endless/mc-map "s" #'mc/sort-regions)
-      (define-key endless/mc-map "l" #'mc/edit-lines)
-      (define-key endless/mc-map "\C-a" #'mc/edit-beginnings-of-lines)
-      (define-key endless/mc-map "\C-e" #'mc/edit-ends-of-lines)
-      )))
+;;       ;; http://endlessparentheses.com/multiple-cursors-keybinds.html?source=rss
+;;       (define-prefix-command 'endless/mc-map)
+;;       ;; C-x m is usually `compose-mail'. Bind it to something
+;;       ;; else if you use this command.
+;;       (define-key ctl-x-map "m" 'endless/mc-map)
+;; ;;; Really really nice!
+;;       (define-key endless/mc-map "i" #'mc/insert-numbers)
+;;       (define-key endless/mc-map "h" #'mc-hide-unmatched-lines-mode)
+;;       (define-key endless/mc-map "a" #'mc/mark-all-like-this)
+
+;; ;;; Occasionally useful
+;;       (define-key endless/mc-map "d" #'mc/mark-all-symbols-like-this-in-defun)
+;;       (define-key endless/mc-map "r" #'mc/reverse-regions)
+;;       (define-key endless/mc-map "s" #'mc/sort-regions)
+;;       (define-key endless/mc-map "l" #'mc/edit-lines)
+;;       (define-key endless/mc-map "\C-a" #'mc/edit-beginnings-of-lines)
+;;       (define-key endless/mc-map "\C-e" #'mc/edit-ends-of-lines)
+;;       )))
 
 ;; (defun xiaoliu/post-init-persp-mode ()
 ;;   (when (fboundp 'spacemacs|define-custom-layout)
@@ -349,13 +329,6 @@
 
 (defun xiaoliu/post-init-org-bullets ()
   (setq org-bullets-bullet-list '("🐉" "🐠" "🐬" "🐤")))
-
-(defun xiaoliu/post-init-deft ()
-  (progn
-    (setq deft-use-filter-string-for-filename t)
-    (spacemacs/set-leader-keys-for-major-mode 'deft-mode "q" 'quit-window)
-    (setq deft-extension "org")
-    (setq deft-directory "~/Emacs/org/")))
 
 (defun xiaoliu/post-init-org-pomodoro ()
   (progn
