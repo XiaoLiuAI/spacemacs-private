@@ -272,22 +272,22 @@ layers configuration. You are free to put any user code."
   (global-set-key (kbd "<C-i>") 'evil-jumper/forward)
   (setq edit-server-url-major-mode-alist
         '(("github\\.com" . org-mode)))
-  (dolist (command '(yank yank-pop))
-    (eval
-     `(defadvice ,command (after indent-region activate)
-        (and (not current-prefix-arg)
-             (member major-mode
-                     '(emacs-lisp-mode
-                       python-mode
-                       c-mode
-                       c++-mode
-                       java-mode
-                       javascript-mode
-                       html-mode
-                       scala-mode
-                       plain-tex-mode))
-             (let ((mark-even-if-inactive transient-mark-mode))
-               (indent-region (region-beginning) (region-end) nil))))))
+  ;; (dolist (command '(yank yank-pop))
+  ;;   (eval
+  ;;    `(defadvice ,command (after indent-region activate)
+  ;;       (and (not current-prefix-arg)
+  ;;            (member major-mode
+  ;;                    '(emacs-lisp-mode
+  ;;                      python-mode
+  ;;                      c-mode
+  ;;                      c++-mode
+  ;;                      java-mode
+  ;;                      javascript-mode
+  ;;                      html-mode
+  ;;                      scala-mode
+  ;;                      plain-tex-mode))
+  ;;            (let ((mark-even-if-inactive transient-mark-mode))
+  ;;              (indent-region (region-beginning) (region-end) nil))))))
   ; (setq org-export-with-sub-superscripts '{})
   ; (global-set-key (kbd "<f8> p") 'org-publish)
   (remove-hook 'python-mode-hook 'spacemacs//init-eldoc-python-mode); 移除会造成问题的minor-mode

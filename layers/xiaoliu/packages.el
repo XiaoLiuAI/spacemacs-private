@@ -14,8 +14,8 @@
 ;; which require an initialization must be listed explicitly in the list.
 (setq xiaoliu-packages
       '(
+        evil
         find-file-in-project ;; better file finder
-        visual-regexp-steroids ;; highlight regex results on the fly
         command-log ;; command history
         ;; ycmd ;; code completion system
         discover-my-major ;; discover key bindings
@@ -23,18 +23,16 @@
         ;; elfeed ;; web feed reader
         ;; prodigy ;; manage services
         ;; languages
-        ;; lua-mode
         ;; (gulpjs :location (recipe :fetcher github :repo "zilongshanren/emacs-gulpjs"))
         ;; nodejs-repl
         ;; Github
         helm-github-stars;; github stared repositories
-        ;; dictionary
+        ;; ;; dictionary
         chinese-word-at-point
         osx-dictionary
-        ;; youdao-dictionary
-        ;; lisp
-        ;; lispy
-        ;; litable
+        ;; ;; youdao-dictionary
+        ;; ;; lispy
+        ;; ;; litable
 
         pangu-spacing
 
@@ -45,17 +43,24 @@
         org-jekyll
         org-tree-slide
 
-        (cc-mode :location built-in)
         (org :location built-in)
-        projectile
-        persp-mode
-        org-pomodoro
-        org-bullets
-        multiple-cursors
-        js2-mode
-        company-c-headers
+        ;; persp-mode
+        ;; org-pomodoro
+        ;; org-bullets
+        ;; multiple-cursors
+        ;; js2-mode
+        ;; company-c-headers
+        ;; (cc-mode :location built-in)
         ))
 
+(defun guanghui/post-init-evil ()
+  (progn
+    (define-key evil-normal-state-map (kbd ",/") 'evilnc-comment-or-uncomment-lines)
+    (define-key evil-normal-state-map
+      (kbd "Y") 'zilongshanren/yank-to-end-of-line)
+
+    (define-key evil-visual-state-map (kbd ",/") 'evilnc-comment-or-uncomment-lines)
+    ))
 (defun xiaoliu/init-command-log ()
   (use-package command-log
     :config
@@ -63,64 +68,6 @@
       (setq clm/log-command-exceptions* (append clm/log-command-exceptions*
                                                 '(evil-next-visual-line
                                                   evil-previous-visual-line))))))
-(defun xiaoliu/init-pangu-spacing ()
-  (use-package pangu-spacing
-    :config
-    (progn
-      ;; add toggle options
-      (spacemacs|add-toggle toggle-pangu-spaceing
-        :status pangu-spacing-mode
-        :on (global-pangu-spacing-mode)
-        :off (global-pangu-spacing-mode -1)
-        :documentation "Toggle pangu spacing mode"
-        :evil-leader "ots")
-      (add-hook 'markdown-mode-hook
-                '(lambda ()
-                   (set (make-local-variable 'pangu-spacing-real-insert-separtor) t))))))
-
-;; (defun xiaoliu/init-litable ()
-;;   (use-package litable
-;;     :init))
-
-(defun xiaoliu/init-chinese-word-at-point ()
-    (use-package chinese-word-at-point
-      :init))
-
-(defun xiaoliu/init-chinese-fonts-setup ()
-  (use-package chinese-fonts-setup
-    :init))
-
-(defun xiaoliu/init-osx-dictionary ()
-  (use-package osx-dictionary
-    :init
-    (progn
-      (evilified-state-evilify osx-dictionary-mode osx-dictionary-mode-map)
-      (setq osx-dictionary-use-chinese-text-segmentation t)
-      (global-set-key (kbd "C-c d") 'osx-dictionary-search-pointer)
-      )))
-
-;; (defun xiaoliu/init-gulpjs ()
-;;   (use-package gulpjs
-;;     :init
-;;     (progn
-;;       (spacemacs/set-leader-keys "ags" 'gulpjs-start-task)
-;;       (spacemacs/set-leader-keys "agr" 'gulpjs-restart-task))))
-
-;; git clone https://github.com/hakimel/reveal.js.git to the right location that can be loaded
-(defun xiaoliu/init-ox-reveal ()
-  (use-package ox-reveal
-    :defer t
-    :init
-    (progn
-      (setq org-reveal-root "reveal.js"))))
-
-(defun xiaoliu/init-org-mac-link ()
-  (use-package org-mac-link
-    :init
-    (add-hook 'org-mode-hook
-              (lambda ()
-                (define-key org-mode-map (kbd "C-c g") 'org-mac-grab-link)))))
-
 (defun xiaoliu/init-discover-my-major ()
   (use-package discover-my-major
     :defer t
@@ -129,7 +76,6 @@
       (spacemacs/set-leader-keys (kbd "mhm") 'discover-my-major)
 
       (evilified-state-evilify makey-key-mode makey-key-mode-get-key-map))))
-
 ;; (defun xiaoliu/post-init-ycmd ()
 ;;   (progn
 ;;     (setq ycmd-tag-files 'auto)
@@ -149,23 +95,6 @@
 ;;       "tb" 'zilong/company-toggle-company-ycmd)
 ;;     (spacemacs/set-leader-keys-for-major-mode 'c++-mode
 ;;       "tb" 'zilong/company-toggle-company-ycmd)))
-
-;; (defun xiaoliu/post-init-lua-mode ()
-;;   (progn
-;;     (when (configuration-layer/package-usedp 'company)
-;;       (push 'company-dabbrev company-backends-lua-mode)
-;;       (push 'company-etags company-backends-lua-mode))
-;;     (add-hook 'lua-mode-hook 'evil-matchit-mode)
-;;     (add-hook 'lua-mode-hook 'smartparens-mode)
-;;     (setq lua-indent-level 4)
-
-;;     (spacemacs/set-leader-keys-for-major-mode 'lua-mode
-;;       "<tab>" 'hs-toggle-hiding
-;;       "gg" 'helm-gtags-dwim
-;;       "gr" 'helm-gtags-find-rtag
-;;       "gs" 'helm-gtags-find-symbol
-;;       "gf" 'helm-gtags-find-files)))
-
 ;; (defun xiaoliu/post-init-elfeed ()
 ;;   (use-package elfeed
 ;;     :init
@@ -214,32 +143,75 @@
 ;;         (kill-new (x-get-selection)))
 
 ;;       (ad-activate 'elfeed-show-yank))))
-
-(defun xiaoliu/init-helm-github-stars ()
-  (use-package helm-github-stars
-    :defer t
-    :config
-    (progn
-      (setq helm-github-stars-username "xiaoliuai")
-      (setq helm-github-stars-cache-file "~/.emacs.d/.cache/hgs-cache"))))
-
-
-
-;; (defun xiaoliu/post-init-lispy ()
-;;   (with-eval-after-load 'lispy
-;;     (progn
-;;       (define-key lispy-mode-map (kbd "s-1") 'lispy-describe-inline)
-;;       (define-key lispy-mode-map (kbd "s-2") 'lispy-arglist-inline))))
-
-;; (defun xiaoliu/post-init-company-c-headers ()
+;; ------------------------------------------------------------------------------------
+;; (defun xiaoliu/post-init-prodigy ()
 ;;   (progn
-;;     (setq company-c-headers-path-system
-;;           (quote
-;;            ("/usr/include/" "/usr/local/include/" "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1")))
-;;     ;; (setq company-c-headers-path-user
-;;     ;;       (quote
-;;     ;;        ("/Users/xiaoliu/cocos2d-x/cocos/platform" "/Users/guanghui/cocos2d-x/cocos" "." "/Users/guanghui/cocos2d-x/cocos/audio/include/")))
-;;     ))
+;;     (prodigy-define-tag
+;;       :name 'jekyll
+;;       :env '(("LANG" "en_US.UTF-8")
+;;              ("LC_ALL" "en_US.UTF-8")))
+;;     ;; define service
+;;     (prodigy-define-service
+;;       :name "Preview cocos2d-x web"
+;;       :command "python"
+;;       :args '("-m" "SimpleHTTPServer" "6001")
+;;       :cwd "~/cocos2d-x/web"
+;;       :tags '(work)
+;;       :kill-signal 'sigkill
+;;       :kill-process-buffer-on-stop t)
+
+;;     (prodigy-define-service
+;;       :name "Preview cocos2d-html5"
+;;       :command "python"
+;;       :args '("-m" "SimpleHTTPServer" "6004")
+;;       :cwd "~/Github/fireball/engine"
+;;       :tags '(work)
+;;       :kill-signal 'sigkill
+;;       :kill-process-buffer-on-stop t)
+
+;;     (prodigy-define-service
+;;       :name "Hexo Server"
+;;       :command "hexo"
+;;       :args '("server")
+;;       :cwd "~/WorkSpace/xiaoliuai.github.io"
+;;       :tags '(hexo server)
+;;       :kill-signal 'sigkill
+;;       :kill-process-buffer-on-stop t)
+
+;;     (prodigy-define-service
+;;       :name "Hexo Deploy"
+;;       :command "hexo"
+;;       :args '("deploy" "--generate")
+;;       :cwd "~/4gamers.cn"
+;;       :tags '(hexo deploy)
+;;       :kill-signal 'sigkill
+;;       :kill-process-buffer-on-stop t)
+
+;;     (prodigy-define-service
+;;       :name "Debug Fireball"
+;;       :command "npm"
+;;       :args '("start" "--" "--nologin" "/Users/xiaoliu/Github/example-cases")
+;;       :cwd "~/Github/fireball/"
+;;       :tags '(work)
+;;       :kill-signal 'sigkill
+;;       :kill-process-buffer-on-stop t)
+
+;;     (prodigy-define-service
+;;       :name "Org wiki preview"
+;;       :command "python"
+;;       :args '("-m" "SimpleHTTPServer" "8088")
+;;       :cwd "~/Emacs/org/public_html"
+;;       :tags '(org-mode)
+;;       :init (lambda () (browse-url "http://localhost:8088"))
+;;       :kill-signal 'sigkill
+;;       :kill-process-buffer-on-stop t)))
+
+;; (defun xiaoliu/init-gulpjs ()
+;;   (use-package gulpjs
+;;     :init
+;;     (progn
+;;       (spacemacs/set-leader-keys "ags" 'gulpjs-start-task)
+;;       (spacemacs/set-leader-keys "agr" 'gulpjs-restart-task))))
 
 ;; (defun xiaoliu/post-init-nodejs-repl ()
 ;;   (progn
@@ -250,121 +222,67 @@
 ;;       "sf" 'nodejs-repl-eval-function
 ;;       "sd" 'nodejs-repl-eval-dwim)))
 
-(defun xiaoliu/init-visual-regexp-steroids ()
-  (use-package visual-regexp-steroids
+(defun xiaoliu/init-helm-github-stars ()
+  (use-package helm-github-stars
+    :defer t
     :config
     (progn
-      (define-key global-map (kbd "C-c r") 'vr/replace)
-      (define-key global-map (kbd "C-c q") 'vr/query-replace))
-    )
-  )
-
-;; (defun xiaoliu/init-multiple-cursors ()
-;;   (use-package multiple-cursors
-;;     :init
-;;     (progn
-;;       (bind-key* "C-s-l" 'mc/edit-lines)
-;;       (bind-key* "C-s-f" 'mc/mark-all-dwim)
-;;       (bind-key* "C-s-." 'mc/mark-next-like-this)
-;;       (bind-key* "C-s-," 'mc/mark-previous-like-this)
-;;       (bind-key* "s->" 'mc/unmark-next-like-this)
-;;       (bind-key* "s-<" 'mc/unmark-previous-like-this)
-;;       (bind-key* "C-c C-s-." 'mc/mark-all-like-this)
-
-;;       ;; http://endlessparentheses.com/multiple-cursors-keybinds.html?source=rss
-;;       (define-prefix-command 'endless/mc-map)
-;;       ;; C-x m is usually `compose-mail'. Bind it to something
-;;       ;; else if you use this command.
-;;       (define-key ctl-x-map "m" 'endless/mc-map)
-;; ;;; Really really nice!
-;;       (define-key endless/mc-map "i" #'mc/insert-numbers)
-;;       (define-key endless/mc-map "h" #'mc-hide-unmatched-lines-mode)
-;;       (define-key endless/mc-map "a" #'mc/mark-all-like-this)
-
-;; ;;; Occasionally useful
-;;       (define-key endless/mc-map "d" #'mc/mark-all-symbols-like-this-in-defun)
-;;       (define-key endless/mc-map "r" #'mc/reverse-regions)
-;;       (define-key endless/mc-map "s" #'mc/sort-regions)
-;;       (define-key endless/mc-map "l" #'mc/edit-lines)
-;;       (define-key endless/mc-map "\C-a" #'mc/edit-beginnings-of-lines)
-;;       (define-key endless/mc-map "\C-e" #'mc/edit-ends-of-lines)
-;;       )))
-
-;; (defun xiaoliu/post-init-persp-mode ()
-;;   (when (fboundp 'spacemacs|define-custom-layout)
-;;     (spacemacs|define-custom-layout "@Cocos2D-X"
-;;       :binding "c"
-;;       :body
-;;       (find-file "~/cocos2d-x/cocos/ui/UIWidget.cpp")
-;;       (split-window-right)
-;;       (find-file "~/cocos2d-x/cocos/cocos2d.cpp"))))
+      (setq helm-github-stars-username "xiaoliuai")
+      (setq helm-github-stars-cache-file "~/.emacs.d/.cache/hgs-cache"))))
+(defun xiaoliu/init-chinese-word-at-point ()
+  (use-package chinese-word-at-point
+    :init))
+(defun xiaoliu/init-osx-dictionary ()
+  (use-package osx-dictionary
+    :init
+    (progn
+      (evilified-state-evilify osx-dictionary-mode osx-dictionary-mode-map)
+      (setq osx-dictionary-use-chinese-text-segmentation t)
+      (global-set-key (kbd "C-c d") 'osx-dictionary-search-pointer)
+      )))
 
 ;; (defun xiaoliu/post-init-youdao-dictionary ()
 ;;   (spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+))
 
-;; (defun xiaoliu/post-init-cc-mode ()
-;;   (progn
-;;     ;; http://stackoverflow.com/questions/23553881/emacs-indenting-of-c11-lambda-functions-cc-mode
-;;     (defadvice c-lineup-arglist (around my activate)
-;;       "Improve indentation of continued C++11 lambda function opened as argument."
-;;       (setq ad-return-value
-;;             (if (and (equal major-mode 'c++-mode)
-;;                      (ignore-errors
-;;                        (save-excursion
-;;                          (goto-char (c-langelem-pos langelem))
-;;                          ;; Detect "[...](" or "[...]{". preceded by "," or "(",
-;;                          ;;   and with unclosed brace.
-;;                          (looking-at ".*[(,][ \t]*\\[[^]]*\\][ \t]*[({][^}]*$"))))
-;;                 0                       ; no additional indent
-;;               ad-do-it)))               ; default behavior
+;; (defun xiaoliu/post-init-lispy ()
+;;   (with-eval-after-load 'lispy
+;;     (progn
+;;       (define-key lispy-mode-map (kbd "s-1") 'lispy-describe-inline)
+;;       (define-key lispy-mode-map (kbd "s-2") 'lispy-arglist-inline))))
 
+;; (defun xiaoliu/init-litable ()
+;;   (use-package litable
+;;     :init))
 
-;;     (setq c-default-style "linux") ;; set style to "linux"
-;;     (setq c-basic-offset 4)
-;;     (c-set-offset 'substatement-open 0)
-;;     (with-eval-after-load 'c++-mode
-;;       (define-key c++-mode-map (kbd "s-.") 'company-ycmd)))
-;;   ;; company backend should be grouped
-;;   )
+(defun xiaoliu/init-pangu-spacing ()
+  (use-package pangu-spacing
+    :config
+    (progn
+      ;; add toggle options
+      (spacemacs|add-toggle toggle-pangu-spaceing
+        :status pangu-spacing-mode
+        :on (global-pangu-spacing-mode)
+        :off (global-pangu-spacing-mode -1)
+        :documentation "Toggle pangu spacing mode"
+        :evil-leader "ots")
+      (add-hook 'markdown-mode-hook
+                '(lambda ()
+                   (set (make-local-variable 'pangu-spacing-real-insert-separtor) t))))))
 
-(defun xiaoliu/post-init-org-bullets ()
-  (setq org-bullets-bullet-list '("🐉" "🐠" "🐬" "🐤")))
-
-(defun xiaoliu/post-init-org-pomodoro ()
-  (progn
-    (add-hook 'org-pomodoro-finished-hook '(lambda () (zilongshanren/growl-notification "Pomodoro Finished" "☕️ Have a break!" t)))
-    (add-hook 'org-pomodoro-short-break-finished-hook '(lambda () (zilongshanren/growl-notification "Short Break" "🐝 Ready to Go?" t)))
-    (add-hook 'org-pomodoro-long-break-finished-hook '(lambda () (zilongshanren/growl-notification "Long Break" " 💪 Ready to Go?" t)))
-    ))
-
-;; (defun xiaoliu/post-init-js2-mode ()
-;;   (progn
-;;     (setq company-backends-js2-mode '((company-dabbrev-code
-;;                                        company-keywords
-;;                                        company-etags) company-files company-dabbrev))
-
-;;     (zilongshanren|toggle-company-backends company-tern)
-
-
-;;     (spacemacs/set-leader-keys-for-major-mode 'js2-mode
-;;       "tb" 'zilong/company-toggle-company-tern)
-
-;;     (spacemacs/set-leader-keys-for-major-mode 'js2-mode
-;;       "ga" 'projectile-find-other-file
-;;       "gA" 'projectile-find-other-file-other-window)
-
-;;     (spacemacs/set-leader-keys-for-major-mode 'web-mode
-;;       "ga" 'projectile-find-other-file
-;;       "gA" 'projectile-find-other-file-other-window)
-;;     (eval-after-load 'js2-mode
-;;       '(progn
-;;          (add-hook 'js2-mode-hook (lambda () (setq mode-name "JS2")))
-;;          (define-key js2-mode-map   (kbd "s-.") 'company-tern)))))
-
-(defun xiaoliu/init-org-tree-slide ()
-  (use-package org-tree-slide
+;; git clone https://github.com/hakimel/reveal.js.git to the right location that can be loaded
+(defun xiaoliu/init-ox-reveal ()
+  (use-package ox-reveal
+    :defer t
     :init
-    (spacemacs/set-leader-keys "oto" 'org-tree-slide-mode)))
+    (progn
+      (setq org-reveal-root "reveal.js"))))
+
+(defun xiaoliu/init-org-mac-link ()
+  (use-package org-mac-link
+    :init
+    (add-hook 'org-mode-hook
+              (lambda ()
+                (define-key org-mode-map (kbd "C-c g") 'org-mac-grab-link)))))
 
 ;; for blog
 (defun xiaoliu/init-org-octopress ()
@@ -390,7 +308,13 @@
 
       (spacemacs/set-leader-keys "op" 'zilongshanren/org-save-and-export)
       )))
-
+(defun xiaoliu/init-org-jekyll ()
+  (use-package org-jekyll
+    :init))
+(defun xiaoliu/init-org-tree-slide ()
+  (use-package org-tree-slide
+    :init
+    (spacemacs/set-leader-keys "oto" 'org-tree-slide-mode)))
 ;; for all org files: notes, gtd
 (defun xiaoliu/post-init-org ()
   (with-eval-after-load 'org
@@ -546,64 +470,110 @@
       (setq org-mobile-directory "~/Emacs/org/org")
       )))
 
-;; (defun xiaoliu/post-init-prodigy ()
+;; (defun xiaoliu/post-init-persp-mode ()
+;;   (when (fboundp 'spacemacs|define-custom-layout)
+;;     (spacemacs|define-custom-layout "@Cocos2D-X"
+;;       :binding "c"
+;;       :body
+;;       (find-file "~/cocos2d-x/cocos/ui/UIWidget.cpp")
+;;       (split-window-right)
+;;       (find-file "~/cocos2d-x/cocos/cocos2d.cpp"))))
+;; (defun xiaoliu/post-init-org-pomodoro ()
 ;;   (progn
-;;     (prodigy-define-tag
-;;       :name 'jekyll
-;;       :env '(("LANG" "en_US.UTF-8")
-;;              ("LC_ALL" "en_US.UTF-8")))
-;;     ;; define service
-;;     (prodigy-define-service
-;;       :name "Preview cocos2d-x web"
-;;       :command "python"
-;;       :args '("-m" "SimpleHTTPServer" "6001")
-;;       :cwd "~/cocos2d-x/web"
-;;       :tags '(work)
-;;       :kill-signal 'sigkill
-;;       :kill-process-buffer-on-stop t)
+;;     (add-hook 'org-pomodoro-finished-hook '(lambda () (zilongshanren/growl-notification "Pomodoro Finished" "☕️ Have a break!" t)))
+;;     (add-hook 'org-pomodoro-short-break-finished-hook '(lambda () (zilongshanren/growl-notification "Short Break" "🐝 Ready to Go?" t)))
+;;     (add-hook 'org-pomodoro-long-break-finished-hook '(lambda () (zilongshanren/growl-notification "Long Break" " 💪 Ready to Go?" t)))
+;;     ))
 
-;;     (prodigy-define-service
-;;       :name "Preview cocos2d-html5"
-;;       :command "python"
-;;       :args '("-m" "SimpleHTTPServer" "6004")
-;;       :cwd "~/Github/fireball/engine"
-;;       :tags '(work)
-;;       :kill-signal 'sigkill
-;;       :kill-process-buffer-on-stop t)
+;; (defun xiaoliu/post-init-org-bullets ()
+;;   (setq org-bullets-bullet-list '("🐉" "🐠" "🐬" "🐤")))
 
-;;     (prodigy-define-service
-;;       :name "Hexo Server"
-;;       :command "hexo"
-;;       :args '("server")
-;;       :cwd "~/WorkSpace/xiaoliuai.github.io"
-;;       :tags '(hexo server)
-;;       :kill-signal 'sigkill
-;;       :kill-process-buffer-on-stop t)
+;; (defun xiaoliu/init-multiple-cursors ()
+;;   (use-package multiple-cursors
+;;     :init
+;;     (progn
+;;       (bind-key* "C-s-l" 'mc/edit-lines)
+;;       (bind-key* "C-s-f" 'mc/mark-all-dwim)
+;;       (bind-key* "C-s-." 'mc/mark-next-like-this)
+;;       (bind-key* "C-s-," 'mc/mark-previous-like-this)
+;;       (bind-key* "s->" 'mc/unmark-next-like-this)
+;;       (bind-key* "s-<" 'mc/unmark-previous-like-this)
+;;       (bind-key* "C-c C-s-." 'mc/mark-all-like-this)
 
-;;     (prodigy-define-service
-;;       :name "Hexo Deploy"
-;;       :command "hexo"
-;;       :args '("deploy" "--generate")
-;;       :cwd "~/4gamers.cn"
-;;       :tags '(hexo deploy)
-;;       :kill-signal 'sigkill
-;;       :kill-process-buffer-on-stop t)
+;;       ;; http://endlessparentheses.com/multiple-cursors-keybinds.html?source=rss
+;;       (define-prefix-command 'endless/mc-map)
+;;       ;; C-x m is usually `compose-mail'. Bind it to something
+;;       ;; else if you use this command.
+;;       (define-key ctl-x-map "m" 'endless/mc-map)
+;; ;;; Really really nice!
+;;       (define-key endless/mc-map "i" #'mc/insert-numbers)
+;;       (define-key endless/mc-map "h" #'mc-hide-unmatched-lines-mode)
+;;       (define-key endless/mc-map "a" #'mc/mark-all-like-this)
 
-;;     (prodigy-define-service
-;;       :name "Debug Fireball"
-;;       :command "npm"
-;;       :args '("start" "--" "--nologin" "/Users/xiaoliu/Github/example-cases")
-;;       :cwd "~/Github/fireball/"
-;;       :tags '(work)
-;;       :kill-signal 'sigkill
-;;       :kill-process-buffer-on-stop t)
+;; ;;; Occasionally useful
+;;       (define-key endless/mc-map "d" #'mc/mark-all-symbols-like-this-in-defun)
+;;       (define-key endless/mc-map "r" #'mc/reverse-regions)
+;;       (define-key endless/mc-map "s" #'mc/sort-regions)
+;;       (define-key endless/mc-map "l" #'mc/edit-lines)
+;;       (define-key endless/mc-map "\C-a" #'mc/edit-beginnings-of-lines)
+;;       (define-key endless/mc-map "\C-e" #'mc/edit-ends-of-lines)
+;;       )))
 
-;;     (prodigy-define-service
-;;       :name "Org wiki preview"
-;;       :command "python"
-;;       :args '("-m" "SimpleHTTPServer" "8088")
-;;       :cwd "~/Emacs/org/public_html"
-;;       :tags '(org-mode)
-;;       :init (lambda () (browse-url "http://localhost:8088"))
-;;       :kill-signal 'sigkill
-;;       :kill-process-buffer-on-stop t)))
+;; (defun xiaoliu/post-init-js2-mode ()
+;;   (progn
+;;     (setq company-backends-js2-mode '((company-dabbrev-code
+;;                                        company-keywords
+;;                                        company-etags) company-files company-dabbrev))
+
+;;     (zilongshanren|toggle-company-backends company-tern)
+
+
+;;     (spacemacs/set-leader-keys-for-major-mode 'js2-mode
+;;       "tb" 'zilong/company-toggle-company-tern)
+
+;;     (spacemacs/set-leader-keys-for-major-mode 'js2-mode
+;;       "ga" 'projectile-find-other-file
+;;       "gA" 'projectile-find-other-file-other-window)
+
+;;     (spacemacs/set-leader-keys-for-major-mode 'web-mode
+;;       "ga" 'projectile-find-other-file
+;;       "gA" 'projectile-find-other-file-other-window)
+;;     (eval-after-load 'js2-mode
+;;       '(progn
+;;          (add-hook 'js2-mode-hook (lambda () (setq mode-name "JS2")))
+;;          (define-key js2-mode-map   (kbd "s-.") 'company-tern)))))
+
+;; (defun xiaoliu/post-init-company-c-headers ()
+;;   (progn
+;;     (setq company-c-headers-path-system
+;;           (quote
+;;            ("/usr/include/" "/usr/local/include/" "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1")))
+;;     ;; (setq company-c-headers-path-user
+;;     ;;       (quote
+;;     ;;        ("/Users/xiaoliu/cocos2d-x/cocos/platform" "/Users/guanghui/cocos2d-x/cocos" "." "/Users/guanghui/cocos2d-x/cocos/audio/include/")))
+;;     ))
+
+;; (defun xiaoliu/post-init-cc-mode ()
+;;   (progn
+;;     ;; http://stackoverflow.com/questions/23553881/emacs-indenting-of-c11-lambda-functions-cc-mode
+;;     (defadvice c-lineup-arglist (around my activate)
+;;       "Improve indentation of continued C++11 lambda function opened as argument."
+;;       (setq ad-return-value
+;;             (if (and (equal major-mode 'c++-mode)
+;;                      (ignore-errors
+;;                        (save-excursion
+;;                          (goto-char (c-langelem-pos langelem))
+;;                          ;; Detect "[...](" or "[...]{". preceded by "," or "(",
+;;                          ;;   and with unclosed brace.
+;;                          (looking-at ".*[(,][ \t]*\\[[^]]*\\][ \t]*[({][^}]*$"))))
+;;                 0                       ; no additional indent
+;;               ad-do-it)))               ; default behavior
+
+
+;;     (setq c-default-style "linux") ;; set style to "linux"
+;;     (setq c-basic-offset 4)
+;;     (c-set-offset 'substatement-open 0)
+;;     (with-eval-after-load 'c++-mode
+;;       (define-key c++-mode-map (kbd "s-.") 'company-ycmd)))
+;;   ;; company backend should be grouped
+;;   )
