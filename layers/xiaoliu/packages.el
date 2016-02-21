@@ -1,4 +1,4 @@
-;;; packages.el --- guanghui Layer packages File for Spacemacs
+;;; packages.el --- xiaoliu Layer packages File for Spacemacs
 ;;
 ;; Copyright (c) 2012-2014 Sylvain Benner
 ;; Copyright (c) 2014-2015 Sylvain Benner & Contributors
@@ -12,7 +12,7 @@
 
 ;; List of all packages to install and/or initialize. Built-in packages
 ;; which require an initialization must be listed explicitly in the list.
-(setq guanghui-packages
+(setq xiaoliu-packages
       '(
         find-file-in-project ;; better file finder
         visual-regexp-steroids ;; highlight regex results on the fly
@@ -30,10 +30,9 @@
         ;; Github
         helm-github-stars;; github stared repositories
         ;; dictionary
+        chinese-word-at-point
         osx-dictionary
         ;; youdao-dictionary
-        ;; Chinese mix input
-        pangu-spacing
         ;; lisp
         ;; lispy
         ;; litable
@@ -42,6 +41,7 @@
         ox-reveal ;; export org to HTML presentation
         org-mac-link ;; insert a link of/from an open mac application
         org-octopress
+        org-jekyll
         org-tree-slide
         deft
 
@@ -60,29 +60,29 @@
         avy
         ))
 
-(defun guanghui/post-init-command-log ()
+(defun xiaoliu/post-init-command-log ()
   (with-eval-after-load 'command-log-mode
     (setq clm/log-command-exceptions* (append clm/log-command-exceptions*
                                               '(evil-next-visual-line
                                                 evil-previous-visual-line)))))
-(defun guanghui/post-init-pangu-spacing ()
-  (progn
-    ;; add toggle options
-    (spacemacs|add-toggle toggle-pangu-spaceing
-      :status pangu-spacing-mode
-      :on (global-pangu-spacing-mode)
-      :off (global-pangu-spacing-mode -1)
-      :documentation "Toggle pangu spacing mode"
-      :evil-leader "ots")
-    (add-hook 'markdown-mode-hook
-              '(lambda ()
-                 (set (make-local-variable 'pangu-spacing-real-insert-separtor) t)))))
+;; (defun xiaoliu/post-init-pangu-spacing ()
+;;   (progn
+;;     ;; add toggle options
+;;     (spacemacs|add-toggle toggle-pangu-spaceing
+;;       :status pangu-spacing-mode
+;;       :on (global-pangu-spacing-mode)
+;;       :off (global-pangu-spacing-mode -1)
+;;       :documentation "Toggle pangu spacing mode"
+;;       :evil-leader "ots")
+;;     (add-hook 'markdown-mode-hook
+;;               '(lambda ()
+;;                  (set (make-local-variable 'pangu-spacing-real-insert-separtor) t)))))
 
-;; (defun guanghui/init-litable ()
+;; (defun xiaoliu/init-litable ()
 ;;   (use-package litable
 ;;     :init))
 
-(defun guanghui/init-osx-dictionary ()
+(defun xiaoliu/init-osx-dictionary ()
   (use-package osx-dictionary
     :init
     (progn
@@ -91,14 +91,14 @@
       (global-set-key (kbd "C-c d") 'osx-dictionary-search-pointer)
       )))
 
-;; (defun guanghui/init-gulpjs ()
+;; (defun xiaoliu/init-gulpjs ()
 ;;   (use-package gulpjs
 ;;     :init
 ;;     (progn
 ;;       (spacemacs/set-leader-keys "ags" 'gulpjs-start-task)
 ;;       (spacemacs/set-leader-keys "agr" 'gulpjs-restart-task))))
 
-;; (defun guanghui/init-4clojure ()
+;; (defun xiaoliu/init-4clojure ()
 ;;   (use-package 4clojure
 ;;     :init
 ;;     (progn
@@ -109,34 +109,35 @@
 ;;       (spacemacs/set-leader-keys "o4c" '4clojure-check-answers)
 ;;       )))
 
-(defun guanghui/post-init-popwin ()
+(defun xiaoliu/post-init-popwin ()
   (progn
     (push "*zilongshanren/run-current-file output*" popwin:special-display-config)
     (delete "*Async Shell Command*" 'popwin:special-display-config)
     ))
 
-(defun guanghui/init-ox-reveal ()
+;; git clone https://github.com/hakimel/reveal.js.git to the location
+(defun xiaoliu/init-ox-reveal ()
   (use-package ox-reveal
     :defer t
     :init
     (progn
-      (setq org-reveal-root "file:///Users/guanghui/.emacs.d/reveal-js"))))
+      (setq org-reveal-root "file:///Users/xiaoliu/.spacemacs.d/reveal-js"))))
 
-(defun guanghui/init-org-mac-link ()
+(defun xiaoliu/init-org-mac-link ()
   (use-package org-mac-link
     :init
     (add-hook 'org-mode-hook
               (lambda ()
                 (define-key org-mode-map (kbd "C-c g") 'org-mac-grab-link)))))
 
-(defun guanghui/post-init-avy ()
+(defun xiaoliu/post-init-avy ()
   (progn
     (global-set-key (kbd "C-s-'") 'avy-goto-char-2)))
 
-(defun guanghui/post-init-ace-window ()
+(defun xiaoliu/post-init-ace-window ()
   (global-set-key (kbd "C-x C-o") #'ace-window))
 
-(defun guanghui/init-discover-my-major ()
+(defun xiaoliu/init-discover-my-major ()
   (use-package discover-my-major
     :defer t
     :init
@@ -145,7 +146,7 @@
 
       (evilified-state-evilify makey-key-mode makey-key-mode-get-key-map))))
 
-;; (defun guanghui/post-init-ycmd ()
+;; (defun xiaoliu/post-init-ycmd ()
 ;;   (progn
 ;;     (setq ycmd-tag-files 'auto)
 ;;     (setq ycmd-request-message-level -1)
@@ -165,7 +166,7 @@
 ;;     (spacemacs/set-leader-keys-for-major-mode 'c++-mode
 ;;       "tb" 'zilong/company-toggle-company-ycmd)))
 
-;; (defun guanghui/post-init-lua-mode ()
+;; (defun xiaoliu/post-init-lua-mode ()
 ;;   (progn
 ;;     (when (configuration-layer/package-usedp 'company)
 ;;       (push 'company-dabbrev company-backends-lua-mode)
@@ -181,7 +182,7 @@
 ;;       "gs" 'helm-gtags-find-symbol
 ;;       "gf" 'helm-gtags-find-files)))
 
-;; (defun guanghui/post-init-elfeed ()
+;; (defun xiaoliu/post-init-elfeed ()
 ;;   (use-package elfeed
 ;;     :init
 ;;     (global-set-key (kbd "C-x w") 'elfeed)
@@ -230,7 +231,7 @@
 
 ;;       (ad-activate 'elfeed-show-yank))))
 
-(defun guanghui/post-init-evil ()
+(defun xiaoliu/post-init-evil ()
   (progn
     (define-key evil-normal-state-map (kbd ",/") 'evilnc-comment-or-uncomment-lines)
 
@@ -239,7 +240,7 @@
     ;; (spacemacs/set-leader-keys "fR" 'zilongshanren/rename-file-and-buffer)
     ))
 
-(defun guanghui/init-helm-github-stars ()
+(defun xiaoliu/init-helm-github-stars ()
   (use-package helm-github-stars
     :defer t
     :config
@@ -249,22 +250,22 @@
 
 
 
-;; (defun guanghui/post-init-lispy ()
+;; (defun xiaoliu/post-init-lispy ()
 ;;   (with-eval-after-load 'lispy
 ;;     (progn
 ;;       (define-key lispy-mode-map (kbd "s-1") 'lispy-describe-inline)
 ;;       (define-key lispy-mode-map (kbd "s-2") 'lispy-arglist-inline))))
 
-(defun guanghui/post-init-company-c-headers ()
+(defun xiaoliu/post-init-company-c-headers ()
   (progn
     (setq company-c-headers-path-system
           (quote
            ("/usr/include/" "/usr/local/include/" "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1")))
     (setq company-c-headers-path-user
           (quote
-           ("/Users/guanghui/cocos2d-x/cocos/platform" "/Users/guanghui/cocos2d-x/cocos" "." "/Users/guanghui/cocos2d-x/cocos/audio/include/")))))
+           ("/Users/xiaoliu/cocos2d-x/cocos/platform" "/Users/guanghui/cocos2d-x/cocos" "." "/Users/guanghui/cocos2d-x/cocos/audio/include/")))))
 
-;; (defun guanghui/post-init-nodejs-repl ()
+;; (defun xiaoliu/post-init-nodejs-repl ()
 ;;   (progn
 ;;     (spacemacs/declare-prefix-for-mode 'js2-mode
 ;;                                        "ms" "REPL")
@@ -273,12 +274,12 @@
 ;;       "sf" 'nodejs-repl-eval-function
 ;;       "sd" 'nodejs-repl-eval-dwim)))
 
-(defun guanghui/post-init-visual-regexp-steroids ()
+(defun xiaoliu/post-init-visual-regexp-steroids ()
   (progn
     (define-key global-map (kbd "C-c r") 'vr/replace)
     (define-key global-map (kbd "C-c q") 'vr/query-replace)))
 
-(defun guanghui/init-multiple-cursors ()
+(defun xiaoliu/init-multiple-cursors ()
   (use-package multiple-cursors
     :init
     (progn
@@ -309,7 +310,7 @@
       (define-key endless/mc-map "\C-e" #'mc/edit-ends-of-lines)
       )))
 
-;; (defun guanghui/post-init-persp-mode ()
+;; (defun xiaoliu/post-init-persp-mode ()
 ;;   (when (fboundp 'spacemacs|define-custom-layout)
 ;;     (spacemacs|define-custom-layout "@Cocos2D-X"
 ;;       :binding "c"
@@ -318,10 +319,10 @@
 ;;       (split-window-right)
 ;;       (find-file "~/cocos2d-x/cocos/cocos2d.cpp"))))
 
-;; (defun guanghui/post-init-youdao-dictionary ()
+;; (defun xiaoliu/post-init-youdao-dictionary ()
 ;;   (spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+))
 
-;; (defun guanghui/post-init-cc-mode ()
+;; (defun xiaoliu/post-init-cc-mode ()
 ;;   (progn
 ;;     ;; http://stackoverflow.com/questions/23553881/emacs-indenting-of-c11-lambda-functions-cc-mode
 ;;     (defadvice c-lineup-arglist (around my activate)
@@ -346,59 +347,24 @@
 ;;   ;; company backend should be grouped
 ;;   )
 
-(defun guanghui/post-init-org-bullets ()
+(defun xiaoliu/post-init-org-bullets ()
   (setq org-bullets-bullet-list '("🐉" "🐠" "🐬" "🐤")))
 
-(defun guanghui/post-init-find-file-in-project ()
-  (progn
-    (defun zilongshanren/search-in-fireball ()
-      (interactive)
-      (helm-do-ag (expand-file-name "~/Github/fireball/")))
-    (spacemacs/set-leader-keys "os" 'zilongshanren/search-in-fireball)
-
-    ;; If you use other VCS (subversion, for example), enable the following option
-    (setq ffip-project-file ".svn")
-    (setq ffip-project-file ".git")
-    ;; in MacOS X, the search file command is CMD+p
-    (bind-key* "s-p" 'find-file-in-project)
-    ;; for this project, I'm only interested certain types of files
-    ;; (setq-default ffip-patterns '("*.html" "*.js" "*.css" "*.java" "*.xml" "*.js"))
-    ;; if the full path of current file is under SUBPROJECT1 or SUBPROJECT2
-    ;; OR if I'm reading my personal issue track document,
-    (defadvice find-file-in-project (before my-find-file-in-project activate compile)
-      (when (ffip-current-full-filename-match-pattern-p "\\(/fireball\\)")
-        ;; set the root directory into "~/projs/PROJECT_DIR"
-        (setq-local ffip-project-root "~/Github/fireball")
-        ;; well, I'm not interested in concatenated BIG js file or file in dist/
-        (setq-local ffip-find-options "-not -size +64k -not -iwholename '*/bin/*'")
-        ;; do NOT search files in below directories, the default value is better.
-        ;; (setq-default ffip-prune-patterns '(".git" ".hg" "*.svn" "node_modules" "bower_components" "obj"))
-        )
-      (when (ffip-current-full-filename-match-pattern-p "\\(/cocos2d-x\\)")
-        ;; set the root directory into "~/projs/PROJECT_DIR"
-        (setq-local ffip-project-root "~/cocos2d-x")
-        ;; well, I'm not interested in concatenated BIG js file or file in dist/
-        (setq-local ffip-find-options "-not -size +64k -not -iwholename '*/bin/*'")
-        ;; do NOT search files in below directories, the default value is better.
-        ;; (setq-default ffip-prune-patterns '(".git" ".hg" "*.svn" "node_modules" "bower_components" "obj"))
-        ))
-    (ad-activate 'find-file-in-project)))
-
-(defun guanghui/post-init-deft ()
+(defun xiaoliu/post-init-deft ()
   (progn
     (setq deft-use-filter-string-for-filename t)
     (spacemacs/set-leader-keys-for-major-mode 'deft-mode "q" 'quit-window)
     (setq deft-extension "org")
     (setq deft-directory "~/Emacs/org/")))
 
-(defun guanghui/post-init-org-pomodoro ()
+(defun xiaoliu/post-init-org-pomodoro ()
   (progn
     (add-hook 'org-pomodoro-finished-hook '(lambda () (zilongshanren/growl-notification "Pomodoro Finished" "☕️ Have a break!" t)))
     (add-hook 'org-pomodoro-short-break-finished-hook '(lambda () (zilongshanren/growl-notification "Short Break" "🐝 Ready to Go?" t)))
     (add-hook 'org-pomodoro-long-break-finished-hook '(lambda () (zilongshanren/growl-notification "Long Break" " 💪 Ready to Go?" t)))
     ))
 
-;; (defun guanghui/post-init-js2-mode ()
+;; (defun xiaoliu/post-init-js2-mode ()
 ;;   (progn
 ;;     (setq company-backends-js2-mode '((company-dabbrev-code
 ;;                                        company-keywords
@@ -422,13 +388,13 @@
 ;;          (add-hook 'js2-mode-hook (lambda () (setq mode-name "JS2")))
 ;;          (define-key js2-mode-map   (kbd "s-.") 'company-tern)))))
 
-(defun guanghui/init-org-tree-slide ()
+(defun xiaoliu/init-org-tree-slide ()
   (use-package org-tree-slide
     :init
     (spacemacs/set-leader-keys "oto" 'org-tree-slide-mode)))
 
 ;; for blog
-(defun guanghui/init-org-octopress ()
+(defun xiaoliu/init-org-octopress ()
   (use-package org-octopress
     :init
     (progn
@@ -444,16 +410,16 @@
       ;; add org-octopress project setting into project list and then use standard org-publish function to publish it.
       ;; org-octopress project setting uses org-jekyll-publish-to-html to publish each file, don't recursively discover files because it manage blog files flatly with date prefix in file name.
       ;; 其实也是有道理的,就算我欣赏 org-jekyll 导出章节的功能,文件夹结构也确实没有多大意义了.好吧,我调整调整
-      (defun zilongshanren/org-save-and-export ()
+      (defun xiaoliu/org-save-and-export ()
         (interactive)
         (org-octopress-setup-publish-project)
-        (org-publish-project "octopress" t))
+        (org-jekyll-export-project "jektopress" t))
 
       (spacemacs/set-leader-keys "op" 'zilongshanren/org-save-and-export)
       )))
 
 ;; for all org files: notes, gtd
-(defun guanghui/post-init-org ()
+(defun xiaoliu/post-init-org ()
   (with-eval-after-load 'org
     (progn
       ;; define the refile targets
@@ -506,7 +472,7 @@
                 (tags-todo "PROJECT") ;; review all projects (assuming you use todo keywords to designate projects)
                 ))))
 
-      (defvar zilongshanren-website-html-preamble
+      (defvar xiaoliu-website-html-preamble
         "<div class='nav'>
 <ul>
 <li><a href='http://xiaoliuai.github.io'>博客</a></li>
@@ -524,12 +490,12 @@
                :publishing-directory "~/WorkSpace/xiaoliuai.github.io/source/publish/"
 
                :recursive t
-               :html-head xiaoliu-website-html-blog-head
+               :html-head ,xiaoliu-website-html-blog-head
                :publishing-function org-html-publish-to-html
                :headline-levels 4           ; Just the default for this project.
                :exclude "gtd.org"
                ;; :exclude-tags ("ol" "noexport")
-               :html-preamble ,zilongshanren-website-html-preamble
+               :html-preamble ,xiaoliu-website-html-preamble
                :author "xiaoliu"
                :email "xiaoliuai@gmail.com"
                :auto-sitemap t               ; Generate sitemap.org automagically...
@@ -607,7 +573,7 @@
       (setq org-mobile-directory "~/Emacs/org/org")
       )))
 
-;; (defun guanghui/post-init-prodigy ()
+;; (defun xiaoliu/post-init-prodigy ()
 ;;   (progn
 ;;     (prodigy-define-tag
 ;;       :name 'jekyll

@@ -2,8 +2,8 @@
 ;;
 ;; Copyright (c) 2015-2016 zilongshanren 
 ;;
-;; Author: zilongshanren <guanghui8827@gmail.com>
-;; URL: https://github.com/zilongshanren/spacemacs-private
+;; Author: xiaoliu <xiao.liu.ai@gmail.com>
+;; URL: https://github.com/xiaoliuai/spacemacs-private
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -17,11 +17,6 @@
   (let ((command-str (format "cd %s && rake %s" octopress-workdir command)))
     (shell-command command-str)))
 
-"qrsync is for 七牛云储存API,what's that?!!!"
-;; (defun zilongshanren/octopress-qrsync (command)
-;;   (let ((command-str (format "qrsync %s" command )))
-;;     (shell-command-to-string command-str)))
-
 (defun zilongshanren/octopress-generate ()
   "generate jekyll site"
   (interactive)
@@ -32,20 +27,13 @@
   "default deploy task"
   (interactive)
   (zilongshanren/octopress-rake "deploy")
-  ;; (zilongshanren/octopress-qrsync "/Users/xiaoliu/WorkSpace/xiaoliuai.github.io/guanghui.json")
   (message "Deploy site OK"))
 
 (defun zilongshanren/octopress-gen-deploy ()
   "generate website and deploy"
   (interactive)
   (zilongshanren/octopress-rake "gen_deploy")
-  ;; (zilongshanren/octopress-qrsync "/Users/xiaoliu/WorkSpace/xiaoliuai.github.io/guanghui.json")
   (message "Generate and Deploy OK"))
-
-;; (defun zilongshanren/octopress-upimg ()
-;;   (interactive)
-;;   (zilongshanren/octopress-qrsync "/Users/xiaoliu/WorkSpace/xiaoliuai.github.io/guanghui.json")
-;;   (message "Up Img to Qiniu"))
 
 (defun directory-parent (directory)
   (let ((parent (file-name-directory (directory-file-name directory))))
