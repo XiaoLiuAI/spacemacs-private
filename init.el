@@ -31,6 +31,7 @@ values."
 
      version-control
      git
+     github
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
@@ -60,9 +61,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   ;; dotspacemacs-additional-packages '()
-   dotspacemacs-additional-packages '(org-jekyll)
-   ;; dotspacemacs-additional-packages '(org-octopress)
+   dotspacemacs-additional-packages '()
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
