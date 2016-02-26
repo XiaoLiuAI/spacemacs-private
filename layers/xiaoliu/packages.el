@@ -15,10 +15,10 @@
 (setq xiaoliu-packages
       '(
         evil
-        find-file-in-project ;; better file finder
-        command-log ;; command history
+        ;; find-file-in-project ;; better file finder
         ;; ycmd ;; code completion system
         discover-my-major ;; discover key bindings
+        evil-vimish-fold
         ;; not for editing
         ;; elfeed ;; web feed reader
         ;; prodigy ;; manage services
@@ -53,7 +53,7 @@
         ;; (cc-mode :location built-in)
         ))
 
-(defun guanghui/post-init-evil ()
+(defun xiaoliu/post-init-evil ()
   (progn
     (define-key evil-normal-state-map (kbd ",/") 'evilnc-comment-or-uncomment-lines)
     (define-key evil-normal-state-map
@@ -61,13 +61,7 @@
 
     (define-key evil-visual-state-map (kbd ",/") 'evilnc-comment-or-uncomment-lines)
     ))
-(defun xiaoliu/init-command-log ()
-  (use-package command-log
-    :config
-    (with-eval-after-load 'command-log-mode
-      (setq clm/log-command-exceptions* (append clm/log-command-exceptions*
-                                                '(evil-next-visual-line
-                                                  evil-previous-visual-line))))))
+
 (defun xiaoliu/init-discover-my-major ()
   (use-package discover-my-major
     :defer t
@@ -76,6 +70,9 @@
       (spacemacs/set-leader-keys (kbd "mhm") 'discover-my-major)
 
       (evilified-state-evilify makey-key-mode makey-key-mode-get-key-map))))
+(defun xiaoliu/init-evil-vimish-fold ()
+  (use-package evil-vimish-fold
+    :init))
 ;; (defun xiaoliu/post-init-ycmd ()
 ;;   (progn
 ;;     (setq ycmd-tag-files 'auto)
@@ -256,6 +253,8 @@
 
 (defun xiaoliu/init-pangu-spacing ()
   (use-package pangu-spacing
+    :init
+    (setq global-pangu-spacing-mode t)
     :config
     (progn
       ;; add toggle options
@@ -304,9 +303,10 @@
       (defun xiaoliu/org-save-and-export ()
         (interactive)
         (org-octopress-setup-publish-project)
-        (org-jekyll-export-project "jektopress" t))
+        (org-publish-project "octopress" t))
+      ;; (org-jekyll-export-project "jektopress"))
 
-      (spacemacs/set-leader-keys "op" 'zilongshanren/org-save-and-export)
+      (spacemacs/set-leader-keys "op" 'xiaoliu/org-save-and-export)
       )))
 (defun xiaoliu/init-org-jekyll ()
   (use-package org-jekyll
@@ -320,8 +320,17 @@
   (with-eval-after-load 'org
     (progn
       ;; define the refile targets
-      (setq org-agenda-files (quote ("~/Emacs/org/" )))
+      (setq org-agenda-files (quote ("~/Emacs/org/blog" "~/Emacs/org/notes" "~/Emacs/org")))
+      ;; (setq org-agenda-files (quote ("~/Emacs/org/blog" )))
       (setq org-default-notes-file "~/Emacs/org/gtd.org")
+      ;; (setq org-todo-keywords '(
+      ;;                           ;; (sequencep "TODO(!)" "START(s!)" "DONE(!)")
+      ;;                           (type "crawler" "geek" "spark" "life")
+      ;;                           ))
+      (setq org-log-done 'time)
+      (setq org-clock-sound t)
+      (setq org-clock-persist 'history)
+      (org-clock-persistence-insinuate)
 
       (with-eval-after-load 'org-agenda
         (define-key org-agenda-mode-map (kbd "P") 'org-pomodoro))
@@ -330,22 +339,22 @@
       ;;add multi-file journal
       (setq org-capture-templates
             '(("t" "Todo" entry (file+headline "~/Emacs/org/gtd.org" "Workspace")
-               "* TODO [#B] %?\n  %i\n"
+               "* TODO [#A] %?\n  %i\n"
                :empty-lines 1)
-              ("n" "notes" entry (file+headline "~/Emacs/org/notes.org" "Quick notes")
+              ("n" "Notes" entry (file+headline "~/Emacs/org/notes.org" "Quick notes")
                "* TODO [#C] %?\n  %i\n %U"
                :empty-lines 1)
               ("b" "Blog Ideas" entry (file+headline "~/Emacs/org/notes.org" "Blog Ideas")
                "* TODO [#B] %?\n  %i\n %U"
                :empty-lines 1)
-              ("w" "work" entry (file+headline "~/Emacs/org/gtd.org" "Cocos2D-X")
-               "* TODO [#A] %?\n  %i\n %U"
-               :empty-lines 1)
               ("c" "Chrome" entry (file+headline "~/Emacs/org/notes.org" "Quick notes")
                "* TODO [#C] %?\n %(zilongshanren/retrieve-chrome-current-tab-url)\n %i\n %U"
                :empty-lines 1)
-              ("l" "links" entry (file+headline "~/Emacs/org/notes.org" "Quick notes")
+              ("l" "Links" entry (file+headline "~/Emacs/org/notes.org" "Quick notes")
                "* TODO [#C] %?\n  %i\n %a \n %U"
+               :empty-lines 1)
+              ("d" "Daily" entry (file+headline "~/Emacs/org/gtd.org" "Daily")
+               "* TODO [#C] %?\n  %i\n"
                :empty-lines 1)
               ("j" "Journal Entry"
                entry (file+datetree "~/Emacs/org/journal.org")
@@ -357,12 +366,12 @@
       (setq org-agenda-custom-commands
             '(
               ("w" . "任务安排")
-              ("wa" "重要且紧急的任务" tags-todo "+PRIORITY=\"A\"")
-              ("wb" "重要且不紧急的任务" tags-todo "-Weekly-Monthly-Daily+PRIORITY=\"B\"")
+              ("wa" "重要且紧急的任务" tags-todo "+PRIORITY=\"A\"") ;; priority 对应 TODO [#X]
+              ("wb" "重要且不紧急的任务" tags-todo "-Weekly-Monthly-Daily+PRIORITY=\"B\"") ;; weekly 什么的应该是对应周期性任务,都是内置的
               ("wc" "不重要且紧急的任务" tags-todo "+PRIORITY=\"C\"")
               ("b" "Blog" tags-todo "BLOG")
               ("p" . "项目安排")
-              ("pw" tags-todo "PROJECT+WORK+CATEGORY=\"noisychannels\"")
+              ("pw" tags-todo "PROJECT+WORK+CATEGORY=\"noisychannels\"");; ??搞不懂
               ("pl" tags-todo "PROJECT+DREAM+CATEGORY=\"xiaoliu\"")
               ("W" "Weekly Review"
                ((stuck "")            ;; review stuck projects as designated by org-stuck-projects
@@ -459,15 +468,13 @@
           (unless noinsert
             (insert output-string))
           output-string))
-      (global-set-key (kbd "C-c a") 'org-agenda)
-      (define-key org-mode-map (kbd "s-p") 'org-priority)
-      (define-key global-map (kbd "<f9>") 'org-capture)
-      (global-set-key (kbd "C-c b") 'org-iswitchb)
-      (define-key evil-normal-state-map (kbd "C-c C-w") 'org-refile)
+      ;; (global-set-key (kbd "C-c a") 'org-agenda) ;;
+      ;; (define-key global-map (kbd "<f9>") 'org-capture)
+      ;; (define-key evil-normal-state-map (kbd "C-c C-w") 'org-refile)
       (spacemacs/set-leader-keys-for-major-mode 'org-mode
-        "owh" 'plain-org-wiki-helm
-        "owf" 'plain-org-wiki)
-      (setq org-mobile-directory "~/Emacs/org/org")
+        "op" 'org-priority
+        "os" 'org-iswitchb)
+      ;; (setq org-mobile-directory "~/Emacs/org/org")
       )))
 
 ;; (defun xiaoliu/post-init-persp-mode ()
