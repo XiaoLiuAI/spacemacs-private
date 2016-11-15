@@ -323,10 +323,10 @@
       (setq org-agenda-files (quote ("~/Emacs/org/blog" "~/Emacs/org/notes" "~/Emacs/org")))
       ;; (setq org-agenda-files (quote ("~/Emacs/org/blog" )))
       (setq org-default-notes-file "~/Emacs/org/gtd.org")
-      ;; (setq org-todo-keywords '(
-      ;;                           ;; (sequencep "TODO(!)" "START(s!)" "DONE(!)")
-      ;;                           (type "crawler" "geek" "spark" "life")
-      ;;                           ))
+      (setq org-todo-keywords '(
+                                (sequencep "TODO(t!)" "START(s!)" "|" "DONE(d!)" "CANCELED(c@)")
+                                ;; (type "crawler" "geek" "spark" "life")
+                                ))
       (setq org-log-done 'time)
       (setq org-clock-sound t)
       (setq org-clock-persist 'history)
@@ -485,15 +485,15 @@
 ;;       (find-file "~/cocos2d-x/cocos/ui/UIWidget.cpp")
 ;;       (split-window-right)
 ;;       (find-file "~/cocos2d-x/cocos/cocos2d.cpp"))))
-;; (defun xiaoliu/post-init-org-pomodoro ()
-;;   (progn
-;;     (add-hook 'org-pomodoro-finished-hook '(lambda () (zilongshanren/growl-notification "Pomodoro Finished" "☕️ Have a break!" t)))
-;;     (add-hook 'org-pomodoro-short-break-finished-hook '(lambda () (zilongshanren/growl-notification "Short Break" "🐝 Ready to Go?" t)))
-;;     (add-hook 'org-pomodoro-long-break-finished-hook '(lambda () (zilongshanren/growl-notification "Long Break" " 💪 Ready to Go?" t)))
-;;     ))
+(defun xiaoliu/post-init-org-pomodoro ()
+  (progn
+    (add-hook 'org-pomodoro-finished-hook '(lambda () (zilongshanren/growl-notification "Pomodoro Finished" "☕️ Have a break!" t)))
+    (add-hook 'org-pomodoro-short-break-finished-hook '(lambda () (zilongshanren/growl-notification "Short Break" "🐝 Ready to Go?" t)))
+    (add-hook 'org-pomodoro-long-break-finished-hook '(lambda () (zilongshanren/growl-notification "Long Break" " 💪 Ready to Go?" t)))
+    ))
 
-;; (defun xiaoliu/post-init-org-bullets ()
-;;   (setq org-bullets-bullet-list '("🐉" "🐠" "🐬" "🐤")))
+(defun xiaoliu/post-init-org-bullets ()
+  (setq org-bullets-bullet-list '("🐉" "🐠" "🐬" "🐤")))
 
 ;; (defun xiaoliu/init-multiple-cursors ()
 ;;   (use-package multiple-cursors

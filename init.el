@@ -270,7 +270,8 @@ layers configuration. You are free to put any user code."
   (golden-ratio-mode t)
   (setq powerline-default-separator 'slant)
   (setq paradox-github-token "4830323ddf6e280c8aad0ee2dac60ae6457c8787")
-  (global-set-key (kbd "<C-i>") 'evil-jumper/forward)
+  ;; (global-set-key (kbd "<C-i>") 'evil-jumper/forward)
+  (define-key evil-motion-state-map [C-i] 'evil-jump-forward)
   (setq edit-server-url-major-mode-alist
         '(("github\\.com" . org-mode)))
   ;; 拷贝代码自动格式化,感觉用处不大,效果不显,放这观察一下吧
@@ -306,6 +307,14 @@ layers configuration. You are free to put any user code."
   ;; (spacemacs//set-monospaced-font   "Source Code Pro" "Hiragino Sans GB" 14 16) ; 中文等宽,org表格对齐, 实际上就是把字的大小给固定了,恰好造成某种效果,把字体弄大了,不符合我的习惯
   (spacemacs/set-leader-keys-for-major-mode 'deft-mode "q" 'quit-window)
   (setq fill-column-indicator t)
+  ;; for Java layout
+  (setq eclim-eclipse-dirs "/Applications/Eclipse.app/Contents/Eclipse/"
+        eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/eclim")
+  (set-keyboard-coding-system nil)
+  (when (eq system-type 'darwin)
+    (setq mac-option-modifier 'meta)
+    (setq mac-command-modifier nil)
+    )
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -315,7 +324,8 @@ layers configuration. You are free to put any user code."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cfs--current-profile-name "profile1" t))
+ '(cfs--current-profile-name "profile1" t)
+ '(send-mail-function (quote mailclient-send-it)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
