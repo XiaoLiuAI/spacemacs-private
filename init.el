@@ -18,6 +18,9 @@ values."
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
    '(
+     lua
+     rust
+     sql
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -42,8 +45,9 @@ values."
      emacs-lisp
      ess
      python
+     ipython
      c-c++
-     java
+     ;; java
      javascript
      html
      octave
@@ -92,6 +96,10 @@ values."
    ;; If non nil then spacemacs will check for updates at startup
    ;; when the current branch is not `develop'. (default t)
    dotspacemacs-check-for-update t
+   ;; If non-nil, a form that evaluates to a package directory. For example, to
+   ;; use different package directories for different Emacs versions, set this
+   ;; to `emacs-version'.
+   dotspacemacs-elpa-subdirectory nil
    ;; One of `vim', `emacs' or `hybrid'. Evil is always enabled but if the
    ;; variable is `emacs' then the `holy-mode' is enabled at startup. `hybrid'
    ;; uses emacs key bindings for vim's insert mode, but otherwise leaves evil
@@ -106,13 +114,21 @@ values."
    ;; by your Emacs build.
    ;; If the value is nil then no banner is displayed. (default 'official)
    dotspacemacs-startup-banner 'official
-   ;; List of items to show in the startup buffer. If nil it is disabled.
-   ;; Possible values are: `recents' `bookmarks' `projects'.
-   ;; (default '(recents projects))
-   dotspacemacs-startup-lists '(recents projects)
+   ;; List of items to show in startup buffer or an association list of
+   ;; the form `(list-type . list-size)`. If nil then it is disabled.
+   ;; Possible values for list-type are:
+   ;; `recents' `bookmarks' `projects' `agenda' `todos'."
+   ;; List sizes may be nil, in which case
+   ;; `spacemacs-buffer-startup-lists-length' takes effect.
+   dotspacemacs-startup-lists '((recents . 5)
+                                (projects . 7)
+                                (todos, 5)
+                                (agenda, 5))
    ;; Number of recent files to show in the startup buffer. Ignored if
    ;; `dotspacemacs-startup-lists' doesn't include `recents'. (default 5)
    dotspacemacs-startup-recent-list-size 5
+   ;; True if the home buffer should respond to resize events.
+   dotspacemacs-startup-buffer-responsive t
    ;; Default major mode of the scratch buffer (default `text-mode')
    dotspacemacs-scratch-mode 'text-mode
    ;; List of themes, the first of the list is loaded when spacemacs starts.
@@ -229,7 +245,7 @@ values."
    ;; If non nil line numbers are turned on in all `prog-mode' and `text-mode'
    ;; derivatives. If set to `relative', also turns on relative line numbers.
    ;; (default nil)
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers t
    ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode t
@@ -274,23 +290,23 @@ layers configuration. You are free to put any user code."
   (define-key evil-motion-state-map [C-i] 'evil-jump-forward)
   (setq edit-server-url-major-mode-alist
         '(("github\\.com" . org-mode)))
-  ;; 拷贝代码自动格式化,感觉用处不大,效果不显,放这观察一下吧
-  (dolist (command '(yank yank-pop))
-    (eval
-     `(defadvice ,command (after indent-region activate)
-        (and (not current-prefix-arg)
-             (member major-mode
-                     '(emacs-lisp-mode
-                       python-mode
-                       c-mode
-                       c++-mode
-                       java-mode
-                       javascript-mode
-                       html-mode
-                       scala-mode
-                       plain-tex-mode))
-             (let ((mark-even-if-inactive transient-mark-mode))
-               (indent-region (region-beginning) (region-end) nil))))))
+  ; ;; 拷贝代码自动格式化,感觉用处不大,效果不显,放这观察一下吧
+  ; (dolist (command '(yank yank-pop))
+  ;   (eval
+  ;    `(defadvice ,command (after indent-region activate)
+  ;       (and (not current-prefix-arg)
+  ;            (member major-mode
+  ;                    '(emacs-lisp-mode
+  ;                      python-mode
+  ;                      c-mode
+  ;                      c++-mode
+  ;                      java-mode
+  ;                      javascript-mode
+  ;                      html-mode
+  ;                      scala-mode
+  ;                      plain-tex-mode))
+  ;            (let ((mark-even-if-inactive transient-mark-mode))
+  ;              (indent-region (region-beginning) (region-end) nil))))))
   ;; 智能行尾添加注释(光标在行尾的时候,在行尾添加注释而不是注释整行)没啥卵用
   ;; (defun qiang-comment-dwim-line (&optional arg)
   ;;   "Replacement for the comment-dwim command. If no region is selected and current line is not blank and we are not at the end of the line, then comment current line. Replaces default behaviour of comment-dwim, when it inserts comment at the end of the line."
@@ -308,8 +324,8 @@ layers configuration. You are free to put any user code."
   (spacemacs/set-leader-keys-for-major-mode 'deft-mode "q" 'quit-window)
   (setq fill-column-indicator t)
   ;; for Java layout
-  (setq eclim-eclipse-dirs "/Applications/Eclipse.app/Contents/Eclipse/"
-        eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/eclim")
+  ; (setq eclim-eclipse-dirs "/Applications/Eclipse.app/Contents/Eclipse/"
+  ;       eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/eclim")
   (set-keyboard-coding-system nil)
   (when (eq system-type 'darwin)
     (setq mac-option-modifier 'meta)
@@ -325,6 +341,9 @@ layers configuration. You are free to put any user code."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(cfs--current-profile-name "profile1" t)
+ '(package-selected-packages
+   (quote
+    (lua-mode yapfify xterm-color ws-butler window-numbering which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tagedit sql-indent spacemacs-theme spaceline smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters racer quelpa pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el paradox pangu-spacing osx-dictionary orgit org-tree-slide org-projectile org-present org-pomodoro org-plus-contrib org-octopress org-jekyll org-download org-bullets open-junk-file noflet neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-mode js2-refactor js-doc info+ indent-guide ido-vertical-mode hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-gitignore helm-github-stars helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gmail-message-mode github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md geeknote flyspell-correct-helm flycheck-rust flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-vimish-fold evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu ess-smart-equals ess-R-object-popup ess-R-data-view eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav edit-server dumb-jump discover-my-major disaster diff-hl deft define-word dash-at-point cython-mode company-web company-tern company-statistics company-c-headers company-anaconda column-enforce-mode coffee-mode cmake-mode clean-aindent-mode clang-format chinese-word-at-point cargo auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(send-mail-function (quote mailclient-send-it)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -333,3 +352,7 @@ layers configuration. You are free to put any user code."
  ;; If there is more than one, they won't work right.
  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+
+(setq-default dotspacemacs-configuration-layers
+              '((c-c++ :variables
+                       c-c++-default-mode-for-headers 'c++-mode)))
